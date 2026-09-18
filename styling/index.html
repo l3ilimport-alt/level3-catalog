@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L3VEL3 | מדריך עיצוב שיער — ספיידר / חימר / פסטה</title>
+<style>
+  :root{
+    --black:#0d0d0d; --panel:#161616; --gold:#c9a24b; --gold-soft:#e3c878;
+    --gray:#8a8a8a; --line:#2a2a2a; --white:#f5f5f3;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:"Heebo","Assistant","Segoe UI",Arial,sans-serif;
+    background:var(--black); color:var(--white);
+    line-height:1.6; padding:0 16px 80px;
+  }
+  .wrap{max-width:1000px;margin:0 auto;}
+  header{text-align:center;padding:48px 0 24px;border-bottom:1px solid var(--line);}
+  .logo{font-weight:800;letter-spacing:4px;font-size:22px;color:var(--white);}
+  .logo span{color:var(--gold);}
+  h1{font-size:30px;font-weight:800;margin-top:18px;}
+  .sub{color:var(--gray);font-size:16px;margin-top:8px;}
+  .hint{color:var(--gold-soft);font-size:13px;margin-top:14px;}
+  .hint b{border-bottom:1px dotted var(--gold);}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px;}
+  @media(max-width:760px){.grid{grid-template-columns:1fr;}}
+  .card{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:26px 22px;position:relative;overflow:hidden;
+    transition:transform .2s,border-color .2s;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--gold);}
+  .card::before{content:"";position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),transparent);}
+  .icon{font-size:32px;margin-bottom:10px;}
+  .name{font-size:21px;font-weight:800;color:var(--gold-soft);}
+  .eng{font-size:12px;letter-spacing:2px;color:var(--gray);text-transform:uppercase;margin-bottom:16px;}
+  .tag{display:inline-block;background:rgba(201,162,75,.12);color:var(--gold-soft);
+    border:1px solid rgba(201,162,75,.35);border-radius:20px;font-size:12px;
+    padding:4px 12px;margin-bottom:18px;}
+  .row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;}
+  .row:last-child{border-bottom:none;}
+  .row .k{color:var(--gray);}
+  .row .v{font-weight:600;text-align:left;}
+  .bestfor{margin-top:16px;font-size:14px;color:var(--white);background:#0d0d0d;
+    border-radius:10px;padding:12px 14px;border:1px dashed var(--line);}
+  .bestfor b{color:var(--gold-soft);}
+
+  /* clickable glossary term */
+  .term{color:var(--gold-soft);border-bottom:1px dotted var(--gold);cursor:pointer;font-weight:600;}
+  .term:hover{color:#fff;}
+
+  /* expand button + content */
+  .expand-btn{margin-top:16px;width:100%;background:transparent;color:var(--gold-soft);
+    border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;cursor:pointer;
+    font-family:inherit;transition:.2s;}
+  .expand-btn:hover{border-color:var(--gold);background:rgba(201,162,75,.08);}
+  .more{display:none;margin-top:14px;font-size:14px;color:#d9d9d6;}
+  .more.open{display:block;}
+  .more ul{list-style:none;margin-top:6px;}
+  .more li{padding:5px 0;padding-right:18px;position:relative;}
+  .more li::before{content:"›";position:absolute;right:0;color:var(--gold);font-weight:800;}
+
+  /* deeper section */
+  .section{margin-top:46px;}
+  .section h2{font-size:22px;color:var(--gold-soft);text-align:center;margin-bottom:8px;}
+  .section .lead{text-align:center;color:var(--gray);font-size:15px;margin-bottom:22px;}
+  .acc{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+  .acc-head{padding:16px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+    font-weight:700;font-size:16px;}
+  .acc-head:hover{color:var(--gold-soft);}
+  .acc-head .arr{color:var(--gold);transition:transform .2s;}
+  .acc.open .arr{transform:rotate(180deg);}
+  .acc-body{display:none;padding:0 20px 18px;color:#d9d9d6;font-size:15px;}
+  .acc.open .acc-body{display:block;}
+
+  .summary{margin-top:46px;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:26px;text-align:center;}
+  .summary h2{font-size:20px;color:var(--gold-soft);margin-bottom:14px;}
+  .summary .pill{display:inline-block;margin:6px;background:#0d0d0d;border:1px solid var(--line);
+    border-radius:30px;padding:8px 16px;font-size:14px;}
+  .summary .pill b{color:var(--gold-soft);}
+  footer{text-align:center;color:var(--gray);font-size:13px;margin-top:46px;letter-spacing:2px;}
+
+  /* popover modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;
+    justify-content:center;padding:24px;z-index:50;}
+  .overlay.open{display:flex;}
+  .pop{background:var(--panel);border:1px solid var(--gold);border-radius:14px;max-width:380px;
+    padding:24px;position:relative;}
+  .pop h3{color:var(--gold-soft);font-size:19px;margin-bottom:10px;}
+  .pop p{font-size:15px;color:#e6e6e3;line-height:1.7;}
+  .pop .close{position:absolute;top:12px;left:14px;color:var(--gray);font-size:24px;cursor:pointer;line-height:1;}
+  .pop .close:hover{color:#fff;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">L3<span>V</span>EL3</div>
+    <h1>איזה מוצר עיצוב מתאים לך?</h1>
+    <p class="sub">המדריך המהיר להבדל בין ספיידר, קרם חימר ופסטה</p>
+    <p class="hint">💡 לחצו על כל <b>מושג מודגש</b> לקבלת הסבר, או על "הרחבה" לפרטים נוספים</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- SPIDER -->
+    <div class="card">
+      <div class="icon">🕸️</div>
+      <div class="name">ספיידר ווקס</div>
+      <div class="eng">Spider Wax</div>
+      <div class="tag">מרקם · תנועה · סיבים</div>
+      <div class="row"><span class="k">סוג</span><span class="v"><span class="term" data-t="fiber">שעוות סיבים</span></span></div>
+      <div class="row"><span class="k">תוצאה</span><span class="v">סיבים, נפח ותנועה</span></div>
+      <div class="row"><span class="k">אחיזה</span><span class="v"><span class="term" data-t="hold">בינונית-גמישה</span></span></div>
+      <div class="row"><span class="k">ברק</span><span class="v"><span class="term" data-t="matte">נמוך</span></span></div>
+      <div class="bestfor">מתאים ל־<b>שיער קצר-בינוני</b> שרוצה הפרדה, מרקם ותנועה דינמית במראה.</div>
+      <button class="expand-btn" onclick="tog(this)">הרחבה ▼</button>
+      <div class="more">
+        <ul>
+          <li>יוצר "חוטים" וסיבים בין השערות — מראה <span class="term" data-t="piecey">מופרד ודינמי</span>.</li>
+          <li>מוסיף נפח ותנועה לשיער דק או שטוח.</li>
+          <li>גימור טבעי, לא נוקשה ולא דביק.</li>
+          <li>הכי בולט על שיער קצר-בינוני עם מעט אורך לשחק איתו.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- CLAY CREAM -->
+    <div class="card">
+      <div class="icon">🪨</div>
+      <div class="name">קרם חימר</div>
+      <div class="eng">Matte Putty</div>
+      <div class="tag">מאט · נקי · מסודר</div>
+      <div class="row"><span class="k">סוג</span><span class="v">פסטת חימר (<span class="term" data-t="bentonite">בנטוניט</span>)</span></div>
+      <div class="row"><span class="k">תוצאה</span><span class="v">מאט נקי ומסודר</span></div>
+      <div class="row"><span class="k">אחיזה</span><span class="v"><span class="term" data-t="rework">בינונית-גמישה</span></span></div>
+      <div class="row"><span class="k">ברק</span><span class="v"><span class="term" data-t="matte">אפס — מאט מלא</span></span></div>
+      <div class="bestfor">מתאים ל־<b>שיער בינוני-קצר</b> שרוצה מראה מטופח, טבעי ומסודר ליום-יום, בלי ברק.</div>
+      <button class="expand-btn" onclick="tog(this)">הרחבה ▼</button>
+      <div class="more">
+        <ul>
+          <li>החימר סופג שמן עודף ונותן גימור <span class="term" data-t="matte">מאט</span> יבש ונקי.</li>
+          <li>אחיזה נוחה שאפשר <span class="term" data-t="rework">לעצב מחדש</span> במהלך היום.</li>
+          <li>מראה מסודר וטבעי — בלי תחושת "מוצר" בשיער.</li>
+          <li>אידיאלי למראה עסקי / יומיומי מטופח.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- PASTE -->
+    <div class="card">
+      <div class="icon">💧</div>
+      <div class="name">פסטה</div>
+      <div class="eng">Paste</div>
+      <div class="tag">אחיזה חזקה · שטיפה קלה</div>
+      <div class="row"><span class="k">סוג</span><span class="v">פסטה על <span class="term" data-t="water">בסיס מים</span></span></div>
+      <div class="row"><span class="k">תוצאה</span><span class="v">מאט טבעי</span></div>
+      <div class="row"><span class="k">אחיזה</span><span class="v"><span class="term" data-t="hold">חזקה</span></span></div>
+      <div class="row"><span class="k">ברק</span><span class="v"><span class="term" data-t="matte">נמוך</span></span></div>
+      <div class="bestfor">מתאים ל־<b>רוב סוגי השיער</b> שרוצה אחיזה חזקה עם שטיפה קלה.</div>
+      <button class="expand-btn" onclick="tog(this)">הרחבה ▼</button>
+      <div class="more">
+        <ul>
+          <li>אחיזה חזקה שמחזיקה את התסרוקת לאורך היום.</li>
+          <li><span class="term" data-t="water">בסיס מים</span> — נשטף בקלות במים, בלי שאריות.</li>
+          <li>גימור מאט טבעי, גמיש לרוב סוגי השיער.</li>
+          <li>בחירה בטוחה ורב-שימושית למי שלא בטוח מה לקחת.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DEEPER EXPLANATIONS -->
+  <div class="section">
+    <h2>רוצים להעמיק?</h2>
+    <p class="lead">לחצו על כל שאלה כדי לפתוח</p>
+
+    <div class="acc">
+      <div class="acc-head" onclick="acc(this)">איך לבחור בין השלושה? <span class="arr">▼</span></div>
+      <div class="acc-body">
+        חשבו על המראה שאתם רוצים: לתנועה, נפח ומרקם "מופרד" — <b>ספיידר</b>.
+        למראה מסודר, טבעי ומאט ליום-יום — <b>קרם חימר</b>.
+        לאחיזה חזקה שמחזיקה היטב ונשטפת בקלות — <b>פסטה</b>.
+        אם אתם מתלבטים, פסטה היא הבחירה הבטוחה והרב-שימושית ביותר.
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="acc(this)">איך מורחים נכון? <span class="arr">▼</span></div>
+      <div class="acc-body">
+        קחו כמות קטנה (בגודל אפונה), חממו אותה בין כפות הידיים עד שהיא נמסה,
+        ומרחו מהשורש לקצה. <b>תמיד מתחילים עם מעט</b> — קל להוסיף, קשה להוריד.
+        חימר ופסטה אפשר לפזר על שיער יבש לאחיזה ומרקם; לעיצוב חלק יותר אפשר למרוח על שיער לח.
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="acc(this)">מה זה גימור "מאט"? <span class="arr">▼</span></div>
+      <div class="acc-body">
+        מאט = ללא ברק. הגימור נראה טבעי ויבש, בלי הברק "הרטוב" של פומייד או ג'ל.
+        זה המראה המבוקש היום — מטופח אך לא "מבריק".
+      </div>
+    </div>
+
+    <div class="acc">
+      <div class="acc-head" onclick="acc(this)">מה ההבדל בין חימר טבעי לבנטוניט? <span class="arr">▼</span></div>
+      <div class="acc-body">
+        שניהם סוגי חימר טבעי שסופגים שמן ונותנים מראה מאט.
+        <b>בנטוניט</b> (חימר וולקני) נותן לקרם החימר את הגימור המאט הנקי והאחיזה הגמישה שלו.
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h2>השורה התחתונה</h2>
+    <p>
+      <span class="pill">🕸️ <b>ספיידר</b> = תנועה וסיבים</span>
+      <span class="pill">🪨 <b>קרם חימר</b> = מאט נקי</span>
+      <span class="pill">💧 <b>פסטה</b> = אחיזה חזקה</span>
+    </p>
+  </div>
+
+  <footer>L3VEL3 ISRAEL · PROFESSIONAL GROOMING</footer>
+</div>
+
+<!-- glossary popover -->
+<div class="overlay" id="ov" onclick="if(event.target.id==='ov')closePop()">
+  <div class="pop">
+    <span class="close" onclick="closePop()">×</span>
+    <h3 id="pt"></h3>
+    <p id="pd"></p>
+  </div>
+</div>
+
+<script>
+  var GLOSS = {
+    bentonite:["בנטוניט","חימר טבעי שנוצר מאפר וולקני. סופג שמן עודף ונותן לשיער גימור מאט יבש ונקי, בלי ברק או שומניות. זה מה שמעניק לקרם החימר את האחיזה והמראה הטבעי שלו."],
+    fiber:["שעוות סיבים","שעווה שיוצרת חוטים דקים בין השערות כשמושכים את הידיים. התוצאה: מרקם, נפח ותנועה — מראה דינמי ו'מופרד' ולא חלק."],
+    matte:["גימור מאט","מראה ללא ברק — טבעי ויבש, בלי האפקט 'הרטוב' של ג'ל או פומייד. המראה המטופח והעכשווי שמבוקש היום."],
+    rework:["ניתן לעיצוב מחדש","האחיזה גמישה — אפשר לשנות ולסדר את התסרוקת מחדש במהלך היום בלי למרוח שוב מוצר."],
+    hold:["אחיזה","כמה התסרוקת 'מחזיקה' לאורך היום. אחיזה גמישה = תנועה טבעית; אחיזה חזקה = שמירה על הצורה לאורך זמן."],
+    water:["בסיס מים","הנוסחה מתמוססת במים, ולכן נשטפת בקלות בשמפו בלי להשאיר שאריות בשיער."],
+    piecey:["מראה מופרד","שיער עם הפרדה ומרקם בין השערות, בניגוד למראה חלק ואחיד — נותן תחושת נפח ותנועה."]
+  };
+  function openPop(k){
+    var g=GLOSS[k]; if(!g)return;
+    document.getElementById('pt').textContent=g[0];
+    document.getElementById('pd').textContent=g[1];
+    document.getElementById('ov').classList.add('open');
+  }
+  function closePop(){document.getElementById('ov').classList.remove('open');}
+  document.querySelectorAll('.term').forEach(function(el){
+    el.addEventListener('click',function(){openPop(this.getAttribute('data-t'));});
+  });
+  function tog(btn){
+    var m=btn.nextElementSibling, open=m.classList.toggle('open');
+    btn.textContent= open ? 'סגירה ▲' : 'הרחבה ▼';
+  }
+  function acc(h){h.parentElement.classList.toggle('open');}
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop();});
+</script>
+</body>
+</html>
