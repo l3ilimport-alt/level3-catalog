@@ -1646,5 +1646,77 @@ try{ if(localStorage.getItem(LANG_KEY)==='ar') setLang('ar'); }catch(e){}
   </div>
 </div>
 
+<script>
+/* 🛒 העגלה נשמרת בין ביקורים — 17.11.2026 (נמרוד, דרך צ'אט הניהול).
+   נשמרים רק שם+מידה וכמות; המחיר מחושב מחדש מהקטלוג הנוכחי בטעינה.
+   מפתח נפרד לכל קטלוג לפי תת-התיקייה — כל הקטלוגים על אותו דומיין.
+   אחסון חסום (מצב פרטי) — הכול נבלע, והקטלוג עובד כרגיל. */
+(function(){
+  if(typeof CART!=='object'||typeof renderCart!=='function'||typeof qUpdate!=='function') return;
+  var seg='';
+  try{ seg=decodeURIComponent(location.pathname.replace(/index\.html?$/,'').split('/').filter(Boolean).pop()||''); }catch(e){}
+  var SK='l3_cart_'+(seg&&seg!=='level3-catalog'?seg:'barber');
+  var WEEK=7*864e5, ready=false;
+  function keyOf(b){ return (b.dataset.name||'')+'|'+(b.dataset.size||''); }
+  function save(){
+    if(!ready) return;
+    try{
+      var it={}, n=0;
+      Object.keys(CART).forEach(function(k){ var c=CART[k]; if(c&&c.qty>0){ it[k]=c.qty; n++; } });
+      if(n) localStorage.setItem(SK, JSON.stringify({v:1, ts:Date.now(), items:it}));
+      else localStorage.removeItem(SK);
+    }catch(e){}
+  }
+  function hideNote(){ var n=document.getElementById('cartRestored'); if(n) n.remove(); }
+  function note(){
+    var ar=(document.documentElement.lang||'')==='ar';
+    try{ if(typeof LANG_KEY==='string'&&localStorage.getItem(LANG_KEY)==='ar') ar=true; }catch(e){}   /* השפה נטענת אחרי הקוד הזה */
+    var d=document.createElement('div');
+    d.id='cartRestored'; d.setAttribute('role','status');
+    d.style.cssText='position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:10040;'+
+      'display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);padding:7px 8px 7px 14px;'+
+      'background:rgba(12,12,16,.94);color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:999px;'+
+      'font-family:inherit;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.35);direction:rtl;width:max-content;white-space:nowrap';
+    var t=document.createElement('span');
+    t.textContent=ar?'تمت استعادة طلبك من الزيارة السابقة'
+                    :'שוחזרה הזמנה מביקור קודם';
+    var c=document.createElement('button');
+    c.type='button'; c.textContent=ar?'مسح':'נקה';
+    c.style.cssText='font:inherit;font-size:12px;font-weight:800;border:0;border-radius:999px;padding:5px 12px;'+
+      'background:var(--gold,#c6a04a);color:#0b0b0e;cursor:pointer';
+    c.onclick=function(){ clearCart(); hideNote(); };
+    var x=document.createElement('button');
+    x.type='button'; x.textContent='✕'; x.setAttribute('aria-label', ar?'إغلاق':'סגור');
+    x.style.cssText='font:inherit;font-size:12px;border:0;background:transparent;color:rgba(255,255,255,.65);cursor:pointer;padding:4px 6px';
+    x.onclick=hideNote;
+    d.appendChild(t); d.appendChild(c); d.appendChild(x);
+    document.body.appendChild(d);
+    var hd=document.querySelector('header'), hb=hd?hd.getBoundingClientRect().bottom:0;
+    if(hb>0&&hb<220) d.style.top=(hb+10)+'px';   /* מתחת לכותרת, לא עליה */
+    setTimeout(hideNote, 12000);
+  }
+  var _rc=renderCart;
+  renderCart=function(){ var r=_rc.apply(this,arguments); save(); return r; };
+  var _cc=clearCart;
+  clearCart=function(){ var r=_cc.apply(this,arguments); try{ localStorage.removeItem(SK); }catch(e){} hideNote(); return r; };
+
+  var s=null, got=0;
+  try{ s=JSON.parse(localStorage.getItem(SK)||'null'); }catch(e){}
+  if(s&&s.items&&Date.now()-(+s.ts||0)<WEEK){
+    var bars=document.querySelectorAll('.qty-bar');
+    Object.keys(s.items).forEach(function(k){
+      var q=parseInt(s.items[k],10)||0; if(q<=0) return;
+      for(var i=0;i<bars.length;i++){
+        if(keyOf(bars[i])!==k) continue;
+        var inp=bars[i].querySelector('.qty-inp');
+        if(inp){ inp.value=q; qUpdate(inp); got++; }
+        break;   /* מוצר שהוסר מהקטלוג או אזל (אין לו שורת כמות) — מושמט בשקט */
+      }
+    });
+  }
+  ready=true; save();
+  if(got) note();
+})();
+</script>
 </body>
 </html>

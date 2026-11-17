@@ -383,8 +383,12 @@ const Q = {};
 const BY = {};
 CATS.forEach(c => c.items.forEach(i => BY[i.id] = i));
 
+/* 🛒 17.11.2026 — העגלה נשמרת שבוע (חותמת זמן במפתח נפרד), ואחר כך מתחילים נקי */
+try{ const ts=+localStorage.getItem(KEY+'-ts')||0;
+     if(ts && Date.now()-ts>7*864e5){ localStorage.removeItem(KEY); localStorage.removeItem(KEY+'-ts'); } }catch(e){}
 try{ Object.assign(Q, JSON.parse(localStorage.getItem(KEY) || '{}')); }catch(e){}
-const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(Q)); }catch(e){} };
+const RESTORED = Object.keys(Q).some(id => BY[id] && Q[id] > 0);
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(Q)); localStorage.setItem(KEY+'-ts', String(Date.now())); }catch(e){} };
 
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const nis = v => v.toLocaleString('he-IL') + ' ₪';
@@ -580,6 +584,34 @@ function setLang(l){
 }
 
 setLang('he');
+
+/* 🛒 17.11.2026 — שורה קטנה ולא חוסמת כשהעגלה שוחזרה מביקור קודם */
+function hideCartNote(){ const n=document.getElementById('cartRestored'); if(n) n.remove(); }
+if(RESTORED){
+  const ar = L==='ar';
+  const d=document.createElement('div');
+  d.id='cartRestored'; d.setAttribute('role','status');
+  d.style.cssText='position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:10040;'+
+    'display:flex;align-items:center;gap:10px;max-width:calc(100% - 32px);padding:7px 8px 7px 14px;'+
+    'background:rgba(12,12,16,.94);color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:999px;'+
+    'font-family:inherit;font-size:13px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.35);direction:rtl;width:max-content;white-space:nowrap';
+  const t=document.createElement('span');
+  t.textContent = ar ? 'تمت استعادة طلبك من الزيارة السابقة' : 'שוחזרה הזמנה מביקור קודם';
+  const c=document.createElement('button');
+  c.type='button'; c.textContent = ar ? 'مسح' : 'נקה';
+  c.style.cssText='font:inherit;font-size:12px;font-weight:800;border:0;border-radius:999px;padding:5px 12px;'+
+    'background:var(--gold,#c6a04a);color:#0b0b0e;cursor:pointer';
+  c.onclick=()=>{ clearAll(); hideCartNote(); };
+  const x=document.createElement('button');
+  x.type='button'; x.textContent='✕'; x.setAttribute('aria-label', ar ? 'إغلاق' : 'סגור');
+  x.style.cssText='font:inherit;font-size:12px;border:0;background:transparent;color:rgba(255,255,255,.65);cursor:pointer;padding:4px 6px';
+  x.onclick=hideCartNote;
+  d.append(t, c, x);
+  document.body.appendChild(d);
+  const hd=document.querySelector('header'), hb=hd?hd.getBoundingClientRect().bottom:0;
+  if(hb>0&&hb<220) d.style.top=(hb+10)+'px';   /* מתחת לכותרת, לא עליה */
+  setTimeout(hideCartNote, 12000);
+}
 </script>
 </body>
 </html>
